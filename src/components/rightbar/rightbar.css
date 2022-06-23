@@ -8,6 +8,8 @@
 
 .rightbarTitle {
     margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 800;
 }
 
 .rightbarFriendList {
@@ -16,31 +18,43 @@
     list-style: none;
 }
 
-.rightbarFriend {
+.rightbarInfo {
+    margin-bottom: 5px;
+}
+
+.rightbarInfoItem {
+    margin-bottom: 10px;
+}
+
+.rightbarInfoKey {
+    font-weight: 500;
+    margin-right: 15px;
+    color: #555;
+}
+
+.rightbarInfoValue {
+    font-weight: 300;
+}
+
+.rightbarFollowings {
+    flex-wrap: wrap;
+    justify-content: space-between;
     display: flex;
-    align-items: center;
-    margin-bottom: 15px;
 }
 
-.rightbarProfileImgContainer {
-    margin-right: 10px;
-    position: relative;
+.rightbarFollowing {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    cursor: pointer;
 }
 
-.rightbarProfileImg {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+
+
+.rightbarFollowingImg {
+    height: 100px;
+    width: 100px;
+    border-radius: 5px;
     object-fit: cover;
 }
 
-.rightbarOnline {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: chartreuse;
-    position: absolute;
-    top: -2px;
-    right: 0;
-    border: 2px solid white;
-}

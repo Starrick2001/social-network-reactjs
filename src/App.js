@@ -1,19 +1,10 @@
 import Home from "./pages/home/Home";
-import Sidebar from "./components/sidebar/Sidebar";
-import Feed from "./components/feed/Feed";
-import Rightbar from "./components/rightbar/Rightbar";
+import Profile from "./pages/profile/Profile"
+import Login from "./pages/login/Login"
+import Register from "./pages/register/Register";
 
 function App() {
-  return (
-    <>
-      <Home />
-      <div className="homeContainer">
-        <Sidebar />
-        <Feed />
-        <Rightbar />
-      </div>
-    </>
-  );
+  return <Home />;
 }
 
 export default App;
