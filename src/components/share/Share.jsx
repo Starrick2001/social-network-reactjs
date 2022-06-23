@@ -2,11 +2,13 @@ import "./share.css";
 import { PermMedia } from "@material-ui/icons";
 
 const Share = () => {
+  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
   return (
     <div className="share">
       <div className="shareWrapper">
         <div className="shareTop">
-          <img src="/assets/logo.png" alt="" className="shareProfileImg" />
+          <img src={PF+"logo.png"} alt="" className="shareProfileImg" />
           <input placeholder="Write something" className="shareInput" />
         </div>
         <hr className="shareHr" />

@@ -1,23 +1,47 @@
 import "./post.css";
 import { MoreVert, ThumbUp, Favorite } from "@material-ui/icons";
-import { users } from "../../dummyData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { format } from "timeago.js";
+import { Link } from "react-router-dom";
 
 const Post = ({ post }) => {
-  const [like,setLike] = useState(post.like)
-  const [isLiked, setIsLiked] = useState(false)
+  const BE = process.env.REACT_APP_BACKEND_SERVER;
+  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await axios.get(`${BE}users?userId=${post.userId}`);
+      setUser(res.data);
+    };
+    fetchUser();
+  }, [post.userId]);
+
+  const [like, setLike] = useState(post.likes.length);
+  const [isLiked, setIsLiked] = useState(false);
+
   const likeHandler = () => {
-    setLike(isLiked ? like - 1 : like + 1)
-    setIsLiked(!isLiked)
-  }
+    setLike(isLiked ? like - 1 : like + 1);
+    setIsLiked(!isLiked);
+  };
   return (
     <div className="post">
       <div className="postWrapper">
         <div className="postTop">
           <div className="postTopLeft">
-            <img src={users.filter(u=>u.id===post.userId)[0].profilePicture} alt="" className="postProfileImg" />
-            <span className="postUsername">{users.filter(u=>u.id===post.userId)[0].username}</span>
-            <span className="postDate">{post.date}</span>
+            <Link
+              to={`profile/${user.username}`}
+              style={{ textDecoration: "none" }}
+            >
+              <img
+                src={user.profilePicture || `${PF}logo.png`}
+                alt=""
+                className="postProfileImg"
+              />
+            </Link>
+            <span className="postUsername">{user.username}</span>
+            <span className="postDate">{format(post.createdAt)}</span>
           </div>
           <div className="postTopRight">
             <MoreVert />
@@ -25,12 +49,12 @@ const Post = ({ post }) => {
         </div>
         <div className="postCenter">
           <span className="postText">{post.description}</span>
-          <img src={post.photo} alt="" className="postImg" />
+          <img src={PF + post.img} alt="" className="postImg" />
         </div>
         <div className="postBottom">
           <div className="postBottomLeft">
-            <ThumbUp className="likeIcon" onClick={likeHandler}/>
-            <Favorite className="likeIcon" onClick={likeHandler}/>
+            <ThumbUp className="likeIcon" onClick={likeHandler} />
+            <Favorite className="likeIcon" onClick={likeHandler} />
             <span className="postLikeCounter">{like} people like it</span>
           </div>
           <div className="postBottomRight">
