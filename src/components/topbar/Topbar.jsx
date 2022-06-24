@@ -1,14 +1,17 @@
 import "./topbar.css";
 import { Search, Person, Chat, Notifications } from "@material-ui/icons";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const Topbar = () => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+  const { user } = useContext(AuthContext);
 
   return (
     <div className="topbarContainer">
       <div className="topbarLeft">
-        <Link to="/" style={{textDecoration: "none"}}>
+        <Link to="/" style={{ textDecoration: "none" }}>
           <span className="logo">Social Network</span>
         </Link>
       </div>
@@ -23,8 +26,8 @@ const Topbar = () => {
       </div>
       <div className="topbarRight">
         <div className="topbarLinks">
-          <span className="topbarLink">HomePage</span>
-          <span className="topbarLink">Timeline</span>
+          {/* <span className="topbarLink">HomePage</span> */}
+          {/* <span className="topbarLink">Timeline</span> */}
         </div>
         <div className="topbarIcons">
           <div className="topbarIconItem">
@@ -40,7 +43,21 @@ const Topbar = () => {
             <div className="topbarIconBadge">1</div>
           </div>
         </div>
-        <img src={PF + "logo.png"} alt="" className="topbarImg" />
+        <div className="topbarInfo">
+          <Link
+            to={`profile/${user.username}`}
+            style={{ textDecoration: "none" }}
+          >
+            <img
+              src={
+                user.profilePicture ? PF + user.profilePicture : PF + "logo.png"
+              }
+              alt=""
+              className="topbarImg"
+            />
+          </Link>
+          <span className="topbarInfoUsername">{user.username}</span>
+        </div>
       </div>
     </div>
   );
