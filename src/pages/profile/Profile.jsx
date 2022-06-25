@@ -3,15 +3,20 @@ import Topbar from "../../components/topbar/Topbar";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Feed from "../../components/feed/Feed";
 import Rightbar from "../../components/rightbar/Rightbar";
+import { CameraAlt } from "@material-ui/icons";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {useParams} from "react-router-dom"
+import { useParams } from "react-router-dom";
+import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const Profile = () => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const BE = process.env.REACT_APP_BACKEND_SERVER;
   const username = useParams().username;
   const [user, setUser] = useState({});
+  const { user: currentUser } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -19,7 +24,33 @@ const Profile = () => {
       setUser(res.data);
     };
     fetchUser();
-  }, [username,BE]);
+  }, [username, BE]);
+
+  const avatarHandler = (e) => {
+    const file = e.target.files[0];
+    const filename = Date.now() + "-" + file.name;
+
+    const storage = getStorage();
+    const storageRef = ref(
+      storage,
+      "users/" + currentUser.username + "/" + filename
+    );
+
+    // 'file' comes from the Blob or File API
+    uploadBytes(storageRef, file).then((snapshot) => {
+      getDownloadURL(storageRef)
+        .then((url) => {
+          axios
+            .put(BE + "users/" + currentUser._id, {
+              userId: currentUser._id,
+              profilePicture: url,
+            })
+            .then(window.location.reload())
+            .catch((err) => console.log(err));
+        })
+        .catch((err) => console.log(err));
+    });
+  };
 
   return (
     <>
@@ -31,20 +62,34 @@ const Profile = () => {
             <div className="profileCover">
               <img
                 src={
-                  user.coverPicture ? PF + user.coverPicture : PF + "logo.png"
+                  user.coverPicture ? user.coverPicture : PF + "logo.png"
                 }
                 alt=""
                 className="profileCoverImg"
               />
-              <img
-                src={
-                  user.profilePicture
-                    ? PF + user.profilePicture
-                    : PF + "logo.png"
-                }
-                alt=""
-                className="profileUserImg"
-              />
+              <div className="profilePictureContainer">
+                <img
+                  src={
+                    user.profilePicture
+                      ? user.profilePicture
+                      : PF + "logo.png"
+                  }
+                  alt=""
+                  className="profileUserImg"
+                />
+                {user.username === currentUser.username && (
+                  <label for="file">
+                    <CameraAlt className="profileCameraIcon" />
+                    <input
+                      style={{ display: "none" }}
+                      type="file"
+                      id="file"
+                      accept=".png,.jpg,.jpeg"
+                      onChange={avatarHandler}
+                    />
+                  </label>
+                )}
+              </div>
             </div>
             <div className="profileInfo">
               <h4 className="profileInfoName">{user.username}</h4>
@@ -53,7 +98,7 @@ const Profile = () => {
           </div>
           <div className="profileRightBottom">
             <Feed username={username} />
-            <Rightbar user={user} />
+            <Rightbar user={user} key={user._id} />
           </div>
         </div>
       </div>

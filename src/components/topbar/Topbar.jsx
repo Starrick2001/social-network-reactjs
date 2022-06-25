@@ -16,13 +16,13 @@ const Topbar = () => {
         </Link>
       </div>
       <div className="topbarCenter">
-        <div className="searchBar">
+        {/* <div className="searchBar">
           <Search className="searchIcon" />
           <input
             placeholder="Search for friend, post"
             className="searchInput"
           />
-        </div>
+        </div> */}
       </div>
       <div className="topbarRight">
         <div className="topbarLinks">
@@ -30,7 +30,7 @@ const Topbar = () => {
           {/* <span className="topbarLink">Timeline</span> */}
         </div>
         <div className="topbarIcons">
-          <div className="topbarIconItem">
+          {/* <div className="topbarIconItem">
             <Person />
             <div className="topbarIconBadge">1</div>
           </div>
@@ -41,7 +41,7 @@ const Topbar = () => {
           <div className="topbarIconItem">
             <Notifications />
             <div className="topbarIconBadge">1</div>
-          </div>
+          </div> */}
         </div>
         <div className="topbarInfo">
           <Link
@@ -50,7 +50,7 @@ const Topbar = () => {
           >
             <img
               src={
-                user.profilePicture ? PF + user.profilePicture : PF + "logo.png"
+                user.profilePicture ? user.profilePicture : PF + "logo.png"
               }
               alt=""
               className="topbarImg"

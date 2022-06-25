@@ -18,9 +18,9 @@ const Sidebar = () => {
           </li>
         </ul>
         <hr className="sidebarHr" />
-        <ul className="sidebarFriendList">
+        {/* <ul className="sidebarFriendList">
           {users.map(u => <CloseFriend key={u.id} user={u}/>)}
-        </ul>
+        </ul> */}
       </div>
     </div>
   );

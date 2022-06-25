@@ -1,10 +1,11 @@
 import "./share.css";
-import { PermMedia } from "@material-ui/icons";
+import { PermMedia, Cancel } from "@material-ui/icons";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useRef } from "react";
 import { useState } from "react";
 import axios from "axios";
+import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
 
 const Share = () => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
@@ -16,6 +17,11 @@ const Share = () => {
   const [file, setFile] = useState(null);
   const imageHandler = (e) => {
     setFile(e.target.files[0]);
+    const reader = new FileReader();
+    reader.onload = () => {
+      document.getElementById("inputPostImg").src = reader.result;
+    };
+    reader.readAsDataURL(e.target.files[0]);
   };
 
   const submitHandler = async (e) => {
@@ -25,24 +31,32 @@ const Share = () => {
       description: desc.current.value,
     };
 
-    const data = new FormData();
-    if (file) {
-      const filename = Date.now() + "-" + file.name;
-      data.append("file", file);
-      data.append("name", filename);
-      newPost.img = filename;
-    }
     axios
       .post(BE + "posts/", newPost)
       .then((res) => {
         if (file) {
-          try {
-            axios.post(BE + "posts/" + res.data._id + "/uploadImg", data);
-          } catch (err) {
-            console.log(err);
-          }
+          const filename = Date.now() + "-" + file.name;
+
+          const storage = getStorage();
+          const storageRef = ref(
+            storage,
+            "posts/" + res.data._id + "/" + filename
+          );
+
+          // 'file' comes from the Blob or File API
+          uploadBytes(storageRef, file).then((snapshot) => {
+            console.log("Uploaded a blob or file!");
+            getDownloadURL(storageRef)
+              .then((url) => {
+                newPost.img = url;
+                axios
+                  .put(BE + "posts/" + res.data._id, newPost)
+                  .then(window.location.reload())
+                  .catch((err) => console.log(err));
+              })
+              .catch((err) => console.log(err));
+          });
         }
-        window.location.reload()
       })
       .catch((err) => console.log(err));
   };
@@ -52,9 +66,7 @@ const Share = () => {
       <div className="shareWrapper">
         <div className="shareTop">
           <img
-            src={
-              user.profilePicture ? PF + user.profilePicture : PF + "logo.png"
-            }
+            src={user.profilePicture ? user.profilePicture : PF + "logo.png"}
             alt=""
             className="shareProfileImg"
           />
@@ -64,6 +76,17 @@ const Share = () => {
             ref={desc}
           />
         </div>
+        {file && (
+          <div className="shareImgContainer">
+            <img
+              id="inputPostImg"
+              className="sharePostImg"
+              src={URL.createObjectURL(file)}
+              alt=""
+            />
+            <Cancel className="shareCancelImg" onClick={() => setFile(null)} />
+          </div>
+        )}
         <hr className="shareHr" />
         <form className="shareBottom" onSubmit={submitHandler}>
           <div className="shareOptions">
