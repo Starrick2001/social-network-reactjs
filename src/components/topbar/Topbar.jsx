@@ -1,12 +1,16 @@
 import "./topbar.css";
-import { Search, Person, Chat, Notifications } from "@material-ui/icons";
+// import { Search, Person, Chat, Notifications } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 const Topbar = () => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-  const { user } = useContext(AuthContext);
+  const { user, dispatch } = useContext(AuthContext);
+
+  const logoutHandler = () => {
+    dispatch({type: "LOGOUT"})
+  };
 
   return (
     <div className="topbarContainer">
@@ -25,10 +29,6 @@ const Topbar = () => {
         </div> */}
       </div>
       <div className="topbarRight">
-        <div className="topbarLinks">
-          {/* <span className="topbarLink">HomePage</span> */}
-          {/* <span className="topbarLink">Timeline</span> */}
-        </div>
         <div className="topbarIcons">
           {/* <div className="topbarIconItem">
             <Person />
@@ -49,14 +49,17 @@ const Topbar = () => {
             style={{ textDecoration: "none" }}
           >
             <img
-              src={
-                user.profilePicture ? user.profilePicture : PF + "logo.png"
-              }
+              src={user.profilePicture ? user.profilePicture : PF + "logo.png"}
               alt=""
               className="topbarImg"
             />
           </Link>
           <span className="topbarInfoUsername">{user.username}</span>
+          {user && (
+            <button className="topbarLogoutButton" onClick={logoutHandler}>
+              Logout
+            </button>
+          )}
         </div>
       </div>
     </div>
