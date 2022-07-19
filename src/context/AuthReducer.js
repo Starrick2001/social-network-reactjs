@@ -18,27 +18,38 @@ const AuthReducer = (state, action) => {
         isFetching: false,
         error: action.payload,
       };
-      case "LOGOUT":
+      case "REFRESH_TOKEN":
         return {
-          user:null,
-          isFetching:false,
-          error:false
+          ...state,
+          user: {
+            ...state.user,
+            refreshToken: action.payload.refreshToken,
+            accessToken: action.payload.accessToken
+          }
         }
+    case "LOGOUT":
+      return {
+        user: null,
+        isFetching: false,
+        error: false,
+      };
     case "FOLLOW":
       return {
         ...state,
         user: {
           ...state.user,
-          followings: [...state.user.followings, action.payload]
-        }
+          followings: [...state.user.followings, action.payload],
+        },
       };
-      case "UNFOLLOW":
+    case "UNFOLLOW":
       return {
         ...state,
         user: {
           ...state.user,
-          followings: state.user.followings.filter(following => following !== action.payload)
-        }
+          followings: state.user.followings.filter(
+            (following) => following !== action.payload
+          ),
+        },
       };
     default:
       return state;

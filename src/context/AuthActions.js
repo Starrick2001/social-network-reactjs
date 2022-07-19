@@ -12,16 +12,26 @@ export const LoginFailure = (error) => ({
   payload: error,
 });
 
+export const RefreshToken = (token) => ({
+  type: "REFRESH_TOKEN",
+  payload: token,
+});
+
+export const RefreshTokenFailure = (error) => ({
+  type: "REFRESH_TOKEN_FAILURE",
+  payload: error,
+});
+
 export const Logout = () => ({
-  type: "LOGOUT"
-})
+  type: "LOGOUT",
+});
 
 export const Follow = (userId) => ({
   type: "FOLLOW",
-  payload: userId
-})
+  payload: userId,
+});
 
 export const UnFollow = (userId) => ({
   type: "UNFOLLOW",
-  payload: userId
-})
+  payload: userId,
+});
